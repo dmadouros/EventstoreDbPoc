@@ -12,6 +12,8 @@
 
 ## Getting Started
 
+**Note:** This will _not_ run on Macs w/ M1s 😞.
+
 1. Start EventstoreDB
     ```bash
     docker-compose up -d
