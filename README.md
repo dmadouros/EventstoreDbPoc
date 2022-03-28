@@ -1,5 +1,15 @@
 # EventstoreDB POC
 
+## Prerequisites
+
+- direnv (`brew install direnv`)
+- clone repo
+    ```
+    git clone git@github.com:dmadouros/EventstoreDbPoc.git
+    ```
+- `cd EventstoreDbPoc`
+- `direnv allow` when prompted
+
 ## Getting Started
 
 1. Start EventstoreDB
