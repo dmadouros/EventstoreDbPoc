@@ -47,12 +47,14 @@
     curl -s http://localhost:8080/rtpbiRequestCount | jq
     ```
 6. [View event streams](http://localhost:2113/web/index.html#/streams)
-    Things to look for:
-    - `pharmacy-*` stream contains a single event for `PharmacyAdded` and you can see the event as json by drilling into the stream and then drilling into the event
-    - Each `rtpbiRequest` has its own stream (based on a the request uuid). If you drill into one of the streams you should see two events: one for `RtpbiRequestReceived` and another for `RtpbiRequestNormalized`
-    - The count increments once per `RtpbiRequestReceived`
 
-What's going on?
+### Things to look for:
+
+- `pharmacy-*` stream contains a single event for `PharmacyAdded` and you can see the event as json by drilling into the stream and then drilling into the event
+- Each `rtpbiRequest` has its own stream (based on a the request uuid). If you drill into one of the streams you should see two events: one for `RtpbiRequestReceived` and another for `RtpbiRequestNormalized`
+- The count increments once per `RtpbiRequestReceived`
+
+### What's going on?
 
 1. When an http request is received for at `receiveRtpbiReqeust`, it generates a "fake" `rtpbiRequest` with a unique identifier and puts a `RtpbiRequestReceived` event into the message store and returns a 200 http status code. This request/response cycle does nothing else(!).
 2. Behind the scenes there are two subscriptions to events
