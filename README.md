@@ -62,3 +62,16 @@
     - A subscription that fires a NormalizeRequest command. This subscription receives the RtpbiRequestReceived event, "normalizes" the request and writes a RtpbiRequestNormalized event to the message store. This is visible in the stream browser in the EventstoreDB admin console within one of the `rtpbiReqeust-*` streams. Note that the stream per `rtpbiRequest` tells the story of a single `rtpbiRequest`.
 
 As previously noted, the count projection is rebuilt at application startup by replaying all `RtpbiRequestReceived` events and incrementing a counter for each one. However, the `RtpbiRequestNormalized` picks up where it left off and does NOT replay the events as normalizing the `rtpbiRequest` twice would be a mistake (technically, this isn't harmful in this example but could be in a larger system since the `RtpbiRequestNormalized` could trigger additional activity).
+
+## To Reset
+
+1. Stop the application (`Ctrl-C`)
+2. Shutdown EventstoreDB
+    ```bash
+    docker-compose rm -sf
+    ```
+3. Delete EventstoreDB data
+    ```bash
+    docker volume rm eventstoredbpoc_eventstore-volume-logs
+    docker volume rm eventstoredbpoc_eventstore-volume-data
+    ```
