@@ -22,7 +22,7 @@ fun main() {
     val client: EventStoreDBClient = EventStoreDBClient.create(settings)
     val objectMapper = ObjectMapper().registerModule(KotlinModule())
     val messageStore = MessageStore(client, objectMapper)
-    val pharmacyRepository = PharmacyRepository(messageStore)
+    val pharmacyRepository = PharmacyRepository(objectMapper, messageStore)
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
         configureApplication(messageStore, objectMapper, pharmacyRepository)

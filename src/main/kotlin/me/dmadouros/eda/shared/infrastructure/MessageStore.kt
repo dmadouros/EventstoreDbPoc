@@ -4,6 +4,7 @@ import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.Position
 import com.eventstore.dbclient.ReadStreamOptions
+import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.SubscribeToAllOptions
 import com.eventstore.dbclient.Subscription
@@ -11,8 +12,8 @@ import com.eventstore.dbclient.SubscriptionFilter
 import com.eventstore.dbclient.SubscriptionListener
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import me.dmadouros.eda.shared.events.Event
 import java.util.concurrent.ExecutionException
+import me.dmadouros.eda.shared.events.Event
 
 private data class PositionEvent(override val id: String, val position: Long) : Event {
     override val type: String = "Read"
@@ -28,7 +29,7 @@ class MessageStore(val client: EventStoreDBClient, val objectMapper: ObjectMappe
         client.appendToStream("${event.category}-${event.id}", eventData).get()
     }
 
-    inline fun <reified T : Event> readEvents(category: String, id: String): List<T> {
+    fun readEvents(category: String, id: String): List<RecordedEvent> {
         val options = ReadStreamOptions.get()
             .forwards()
             .fromStart()
@@ -36,8 +37,6 @@ class MessageStore(val client: EventStoreDBClient, val objectMapper: ObjectMappe
         return client.readStream("$category-$id", 10, options).get()
             .events
             .map { it.originalEvent }
-            .map { it.eventData }
-            .map { objectMapper.readValue(it) }
     }
 
     fun subscribe(

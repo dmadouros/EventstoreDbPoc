@@ -2,9 +2,11 @@ package me.dmadouros.eda.pharmacy.commands
 
 import me.dmadouros.eda.pharmacy.dtos.PharmacyDto
 import me.dmadouros.eda.pharmacy.events.PharmacyAdded
+import me.dmadouros.eda.shared.infrastructure.MessageStore
 
-object AddPharmacy {
-    fun call(pharmacy: PharmacyDto): PharmacyAdded {
-        return PharmacyAdded(id = pharmacy.npi, body = pharmacy)
+class AddPharmacy(private val messageStore: MessageStore) {
+    fun call(pharmacy: PharmacyDto) {
+        val pharmacyAdded = PharmacyAdded(id = pharmacy.npi, body = pharmacy)
+        messageStore.writeEvent(pharmacyAdded)
     }
 }

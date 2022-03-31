@@ -3,6 +3,7 @@
 ## Prerequisites
 
 - direnv (`brew install direnv`)
+- jq (`brew install jq`)
 - clone repo
     ```
     git clone git@github.com:dmadouros/EventstoreDbPoc.git
@@ -47,6 +48,11 @@
     curl -s http://localhost:8080/rtpbiRequestCount | jq
     ```
 6. [View event streams](http://localhost:2113/web/index.html#/streams)
+7. View the denormalized rtpbi request
+    ```bash
+    curl -s http://localhost:8080/denormalizedRequests/{id} | jq
+    ```
+    replacing `{id}` with one of the UUIDs for an `rtpbiRequest` in the [stream browser](http://localhost:2113/web/index.html#/streams)
 
 ### Things to look for:
 
@@ -58,20 +64,15 @@
 
 1. When an http request is received for at `receiveRtpbiReqeust`, it generates a "fake" `rtpbiRequest` with a unique identifier and puts a `RtpbiRequestReceived` event into the message store and returns a 200 http status code. This request/response cycle does nothing else(!).
 2. Behind the scenes there are two subscriptions to events
-    - A subscription that fires an UpdateRtpbiRequestReceivedCount Command that updates an in-memory "projection" that increments the count for each RtpbiRequestReceived. This projection is rebuilt at application startup time but could be store in a differrent data store. This is visible by issuing a second http request to `rtpbiRequestCount`.
-    - A subscription that fires a NormalizeRequest command. This subscription receives the RtpbiRequestReceived event, "normalizes" the request and writes a RtpbiRequestNormalized event to the message store. This is visible in the stream browser in the EventstoreDB admin console within one of the `rtpbiReqeust-*` streams. Note that the stream per `rtpbiRequest` tells the story of a single `rtpbiRequest`.
+    - A subscription that fires an `UpdateRtpbiRequestReceivedCount` command that updates an in-memory "projection" that increments the count for each RtpbiRequestReceived. This projection is rebuilt at application startup time but could be store in a differrent data store. This is visible by issuing a second http request to `rtpbiRequestCount`.
+    - A subscription that fires an `IdentifyPatient` command. This subscription receives the `RtpbiRequestReceived` event, looks up a pharmacy for the requested pharmacy npi and writes a `PharmacyFound` event to the message store. This is visible in the stream browser in the EventstoreDB admin console within one of the `rtpbiReqeust-*` streams. Note that the stream per `rtpbiRequest` tells the story of a single `rtpbiRequest`.
 
-As previously noted, the count projection is rebuilt at application startup by replaying all `RtpbiRequestReceived` events and incrementing a counter for each one. However, the `RtpbiRequestNormalized` picks up where it left off and does NOT replay the events as normalizing the `rtpbiRequest` twice would be a mistake (technically, this isn't harmful in this example but could be in a larger system since the `RtpbiRequestNormalized` could trigger additional activity).
+As previously noted, the count projection is rebuilt at application startup by replaying all `RtpbiRequestReceived` events and incrementing a counter for each one. However, the `PharmacyFound` picks up where it left off and does NOT replay the events as identifying the pharmacy for the `rtpbiRequest` twice would be a mistake (technically, this isn't harmful in this example but could be in a larger system since the `PharmacyFound` could trigger additional activity).
 
 ## To Reset
 
 1. Stop the application (`Ctrl-C`)
 2. Shutdown EventstoreDB
     ```bash
-    docker-compose rm -sf
-    ```
-3. Delete EventstoreDB data
-    ```bash
-    docker volume rm eventstoredbpoc_eventstore-volume-logs
-    docker volume rm eventstoredbpoc_eventstore-volume-data
+    docker-compose down --volumes
     ```
