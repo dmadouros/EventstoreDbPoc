@@ -39,16 +39,37 @@
         }
     }'
     ```
-4. Submit a fake `RtpbiRequest`
+4. Add a medication (one time only!)
+    ```bash
+    curl --location --request POST 'http://localhost:8080/medications' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "ndc": "1234567890",
+        "name": "Advil",
+        "quomCode": "C12345"
+    }'
+    ```
+5. Add a provider (one time only!)
+    ```bash
+    curl --location --request POST 'http://localhost:8080/providers' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "npi": "1234567890",
+        "firstName": "Doogie",
+        "lastName": "Howser",
+        "credentials": "MD"
+    }'
+    ```
+5. Submit a fake `RtpbiRequest`
     ```bash
     curl -s http://localhost:8080/receiveRtpbiRequest
     ```
-5. View `RtpbiRequest` count
+6. View `RtpbiRequest` count
     ```bash
     curl -s http://localhost:8080/rtpbiRequestCount | jq
     ```
-6. [View event streams](http://localhost:2113/web/index.html#/streams)
-7. View the denormalized rtpbi request
+7. [View event streams](http://localhost:2113/web/index.html#/streams)
+8. View the denormalized rtpbi request
     ```bash
     curl -s http://localhost:8080/denormalizedRequests/{id} | jq
     ```

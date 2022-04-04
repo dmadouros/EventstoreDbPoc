@@ -11,7 +11,7 @@ class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            configureDirect(client, objectMapper, pharmacyRepository)
+            configureDirect(client, objectMapper, pharmacyRepository, medicationRepository)
         }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
