@@ -14,10 +14,12 @@ import me.dmadouros.eda.direct.test.RtpbiRequestFactory
 import me.dmadouros.eda.medication.commands.IdentifyMedication
 import me.dmadouros.eda.pharmacy.commands.IdentifyPharmacy
 import me.dmadouros.eda.provider.commands.IdentifyProvider
+import me.dmadouros.eda.quom.commands.IdentifyQuom
 import me.dmadouros.eda.shared.infrastructure.MedicationRepository
 import me.dmadouros.eda.shared.infrastructure.MessageStore
 import me.dmadouros.eda.shared.infrastructure.PharmacyRepository
 import me.dmadouros.eda.shared.infrastructure.ProviderRepository
+import me.dmadouros.eda.shared.infrastructure.QuomRepository
 import java.util.UUID
 
 object Projection {
@@ -32,6 +34,7 @@ fun Application.configureDirect(
     pharmacyRepository: PharmacyRepository,
     medicationRepository: MedicationRepository,
     providerRepository: ProviderRepository,
+    quomRepository: QuomRepository,
 ) {
     messageStore.subscribe(
         category = "rtpbiRequest",
@@ -46,10 +49,8 @@ fun Application.configureDirect(
         category = "rtpbiRequest",
         subscriberId = "components:identifyPharmacy",
     ) {
-        println("subscribing to RtpbiRequest in identifyPharmacy")
         if (it.originalEvent.eventType == "RtpbiRequestReceived") {
             try {
-                println("identifyPharmacy received RtpbiRequest")
                 val rtpbiRequestReceived: RtpbiRequestReceived = objectMapper.readValue(it.originalEvent.eventData)
                 val pharmacyIdentified = IdentifyPharmacy(pharmacyRepository).call(
                     rtpbiRequestReceived.id,
@@ -65,10 +66,8 @@ fun Application.configureDirect(
         category = "rtpbiRequest",
         subscriberId = "components:identifyMedication",
     ) {
-        println("subscribing to RtpbiRequest in identifyMedication")
         if (it.originalEvent.eventType == "RtpbiRequestReceived") {
             try {
-                println("identifyMedication received RtpbiRequest")
                 val rtpbiRequestReceived: RtpbiRequestReceived = objectMapper.readValue(it.originalEvent.eventData)
                 val medicationIdentified = IdentifyMedication(medicationRepository).call(
                     rtpbiRequestReceived.id,
@@ -97,9 +96,26 @@ fun Application.configureDirect(
             }
         }
     }
+    messageStore.subscribe(
+        category = "rtpbiRequest",
+        subscriberId = "components:identifyQuom",
+    ) {
+        if (it.originalEvent.eventType == "RtpbiRequestReceived") {
+            try {
+                val rtpbiRequestReceived: RtpbiRequestReceived = objectMapper.readValue(it.originalEvent.eventData)
+                val quomIdentified = IdentifyQuom(quomRepository).call(
+                    rtpbiRequestReceived.id,
+                    rtpbiRequestReceived.body.prescription.quantity.quomCode
+                )
+                messageStore.writeEvent(quomIdentified)
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
+    }
 
     routing {
-        get("/rtpbiRequestCount") {
+        get("/direct/rtpbiRequestCount") {
             call.respond(mapOf("count" to Projection.count))
         }
 

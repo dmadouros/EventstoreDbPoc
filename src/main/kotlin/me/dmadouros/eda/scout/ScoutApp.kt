@@ -13,10 +13,13 @@ import me.dmadouros.eda.direct.events.RtpbiRequestReceived
 import me.dmadouros.eda.medication.events.MedicationFound
 import me.dmadouros.eda.pharmacy.events.PharmacyFound
 import me.dmadouros.eda.provider.events.ProviderFound
+import me.dmadouros.eda.quom.events.QuomFound
+import me.dmadouros.eda.scout.dtos.DenormalizeQuantityDto
 import me.dmadouros.eda.scout.dtos.DenormalizedMedicationDto
 import me.dmadouros.eda.scout.dtos.DenormalizedPharmacyDto
 import me.dmadouros.eda.scout.dtos.DenormalizedPrescriptionDto
 import me.dmadouros.eda.scout.dtos.DenormalizedProviderDto
+import me.dmadouros.eda.scout.dtos.DenormalizedQuomDto
 import me.dmadouros.eda.scout.dtos.DenormalizedRtpbiRequestDto
 import me.dmadouros.eda.shared.infrastructure.MessageStore
 
@@ -46,7 +49,9 @@ private fun denormalizeRtpbiRequest(
                 eligibility = rtpbiRequest.eligibility,
                 prescription = DenormalizedPrescriptionDto(
                     daysSupply = rtpbiRequest.prescription.daysSupply,
-                    quantity = rtpbiRequest.prescription.quantity,
+                    quantity = DenormalizeQuantityDto(
+                        value = rtpbiRequest.prescription.quantity.value
+                    ),
                     dawCode = rtpbiRequest.prescription.dawCode,
                 ),
                 pIdentifier = rtpbiRequest.pIdentifier,
@@ -92,8 +97,23 @@ private fun denormalizeRtpbiRequest(
                 )
             )
         }
+    val quomFound =
+        { denormalizeRtpbiRequestDto: DenormalizedRtpbiRequestDto, recordedEvent: RecordedEvent ->
+            val quom = objectMapper.readValue<QuomFound>(recordedEvent.eventData).body
+            denormalizeRtpbiRequestDto.copy(
+                prescription = denormalizeRtpbiRequestDto.prescription.copy(
+                    quantity = denormalizeRtpbiRequestDto.prescription.quantity.copy(
+                        quom = DenormalizedQuomDto(
+                            ncitCode = quom.ncitCode,
+                            term = quom.term,
+                        )
+                    )
+                )
+            )
+        }
 
     val projection = mapOf(
+        "QuomFound" to quomFound,
         "ProviderFound" to providerFound,
         "MedicationFound" to medicationFound,
         "PharmacyFound" to pharmacyFound,

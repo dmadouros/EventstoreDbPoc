@@ -7,7 +7,7 @@
     - [x] Handler for projection
 - [x] Add ProviderIdentified (ProviderFound/ProviderNotFound)
 - [ ] Add PatientIdentified (PatientFound/PatientAdded)
-- [ ] Add QuomIdentified (QuomFound/QuomNotFound)
+- [x] Add QuomIdentified (QuomFound/QuomNotFound)
 - [ ] Publish commands to the message store
 - [ ] Refactor, refactor, refactor
 - [ ] Figure out how to handle \*NotFound errors

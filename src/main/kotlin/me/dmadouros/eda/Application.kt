@@ -15,11 +15,13 @@ import me.dmadouros.eda.direct.configureDirect
 import me.dmadouros.eda.medication.configureMedication
 import me.dmadouros.eda.pharmacy.configurePharmacy
 import me.dmadouros.eda.provider.configureProvider
+import me.dmadouros.eda.quom.configureQuom
 import me.dmadouros.eda.scout.configureScout
 import me.dmadouros.eda.shared.infrastructure.MedicationRepository
 import me.dmadouros.eda.shared.infrastructure.MessageStore
 import me.dmadouros.eda.shared.infrastructure.PharmacyRepository
 import me.dmadouros.eda.shared.infrastructure.ProviderRepository
+import me.dmadouros.eda.shared.infrastructure.QuomRepository
 
 fun main() {
     val connectionString = "esdb://admin:changeit@localhost:2113?tls=false"
@@ -30,9 +32,17 @@ fun main() {
     val pharmacyRepository = PharmacyRepository(objectMapper, messageStore)
     val medicationRepository = MedicationRepository(objectMapper, messageStore)
     val providerRepository = ProviderRepository(objectMapper, messageStore)
+    val quomRepository = QuomRepository(objectMapper, messageStore)
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        configureApplication(messageStore, objectMapper, pharmacyRepository, medicationRepository, providerRepository)
+        configureApplication(
+            messageStore,
+            objectMapper,
+            pharmacyRepository,
+            medicationRepository,
+            providerRepository,
+            quomRepository
+        )
     }.start(wait = true)
 }
 
@@ -41,15 +51,24 @@ fun Application.configureApplication(
     objectMapper: ObjectMapper,
     pharmacyRepository: PharmacyRepository,
     medicationRepository: MedicationRepository,
-    providerRepository: ProviderRepository
+    providerRepository: ProviderRepository,
+    quomRepository: QuomRepository,
 ) {
     install(ContentNegotiation) {
         jackson()
     }
 
-    configureDirect(messageStore, objectMapper, pharmacyRepository, medicationRepository, providerRepository)
+    configureDirect(
+        messageStore,
+        objectMapper,
+        pharmacyRepository,
+        medicationRepository,
+        providerRepository,
+        quomRepository
+    )
     configurePharmacy(messageStore)
     configureMedication(messageStore)
     configureProvider(messageStore)
     configureScout(objectMapper, messageStore)
+    configureQuom(messageStore)
 }

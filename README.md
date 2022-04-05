@@ -60,16 +60,25 @@
         "credentials": "MD"
     }'
     ```
-5. Submit a fake `RtpbiRequest`
+6. Add a quom (one time only!)
+    ```bash
+    curl --location --request POST 'http://localhost:8080/quom/quoms' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "ncitCode": "C12345",
+        "term": "Tablet"
+    }'
+    ```
+7. Submit a fake `RtpbiRequest`
     ```bash
     curl -s http://localhost:8080/direct/receiveRtpbiRequest
     ```
-6. View `RtpbiRequest` count
+8. View `RtpbiRequest` count
     ```bash
-    curl -s http://localhost:8080/rtpbiRequestCount | jq
+    curl -s http://localhost:8080/direct/rtpbiRequestCount | jq
     ```
-7. [View event streams](http://localhost:2113/web/index.html#/streams)
-8. View the denormalized rtpbi request
+9. [View event streams](http://localhost:2113/web/index.html#/streams)
+10. View the denormalized rtpbi request
     ```bash
     curl -s http://localhost:8080/scout/denormalizedRequests/{id} | jq
     ```
