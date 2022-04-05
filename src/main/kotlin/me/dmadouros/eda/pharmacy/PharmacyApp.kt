@@ -12,7 +12,7 @@ import me.dmadouros.eda.shared.infrastructure.MessageStore
 
 fun Application.configurePharmacy(messageStore: MessageStore) {
     routing {
-        post("/pharmacies") {
+        post("/pharmacy/pharmacies") {
             val pharmacy = call.receive<PharmacyDto>()
 
             AddPharmacy(messageStore).call(pharmacy)

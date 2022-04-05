@@ -1,4 +1,6 @@
-package me.dmadouros.eda.direct.dtos
+package me.dmadouros.eda.scout.dtos
+
+import me.dmadouros.eda.direct.dtos.QuantityDto
 
 data class DenormalizedPrescriptionDto(
     val ndc: DenormalizedMedicationDto = DenormalizedMedicationDto(),

@@ -15,6 +15,6 @@ data class ProviderFound(
     override val type: String = "ProviderFound"
 }
 
-//data class ProviderNotFound(override val id: String) : ProviderIdentified(id), Event {
+// data class ProviderNotFound(override val id: String) : ProviderIdentified(id), Event {
 //    override val type: String = "ProviderNotFound"
-//}
+// }

@@ -25,7 +25,7 @@
     ```
 3. Add a pharmacy (one time only!)
     ```bash
-    curl --location --request POST 'http://localhost:8080/pharmacies' \
+    curl --location --request POST 'http://localhost:8080/pharmacy/pharmacies' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "npi": "0987654321",
@@ -41,7 +41,7 @@
     ```
 4. Add a medication (one time only!)
     ```bash
-    curl --location --request POST 'http://localhost:8080/medications' \
+    curl --location --request POST 'http://localhost:8080/medication/medications' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "ndc": "1234567890",
@@ -51,7 +51,7 @@
     ```
 5. Add a provider (one time only!)
     ```bash
-    curl --location --request POST 'http://localhost:8080/providers' \
+    curl --location --request POST 'http://localhost:8080/provider/providers' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "npi": "1234567890",
@@ -62,7 +62,7 @@
     ```
 5. Submit a fake `RtpbiRequest`
     ```bash
-    curl -s http://localhost:8080/receiveRtpbiRequest
+    curl -s http://localhost:8080/direct/receiveRtpbiRequest
     ```
 6. View `RtpbiRequest` count
     ```bash
@@ -71,7 +71,7 @@
 7. [View event streams](http://localhost:2113/web/index.html#/streams)
 8. View the denormalized rtpbi request
     ```bash
-    curl -s http://localhost:8080/denormalizedRequests/{id} | jq
+    curl -s http://localhost:8080/scout/denormalizedRequests/{id} | jq
     ```
     replacing `{id}` with one of the UUIDs for an `rtpbiRequest` in the [stream browser](http://localhost:2113/web/index.html#/streams)
 

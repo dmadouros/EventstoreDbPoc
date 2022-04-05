@@ -12,7 +12,7 @@ import me.dmadouros.eda.shared.infrastructure.MessageStore
 
 fun Application.configureProvider(messageStore: MessageStore) {
     routing {
-        post("/providers") {
+        post("/provider/providers") {
             val provider = call.receive<ProviderDto>()
 
             AddProvider(messageStore).call(provider)

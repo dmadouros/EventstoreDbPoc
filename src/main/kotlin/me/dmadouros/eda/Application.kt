@@ -15,6 +15,7 @@ import me.dmadouros.eda.direct.configureDirect
 import me.dmadouros.eda.medication.configureMedication
 import me.dmadouros.eda.pharmacy.configurePharmacy
 import me.dmadouros.eda.provider.configureProvider
+import me.dmadouros.eda.scout.configureScout
 import me.dmadouros.eda.shared.infrastructure.MedicationRepository
 import me.dmadouros.eda.shared.infrastructure.MessageStore
 import me.dmadouros.eda.shared.infrastructure.PharmacyRepository
@@ -50,4 +51,5 @@ fun Application.configureApplication(
     configurePharmacy(messageStore)
     configureMedication(messageStore)
     configureProvider(messageStore)
+    configureScout(objectMapper, messageStore)
 }

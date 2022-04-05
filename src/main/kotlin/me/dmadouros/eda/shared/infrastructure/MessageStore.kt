@@ -12,8 +12,8 @@ import com.eventstore.dbclient.SubscriptionFilter
 import com.eventstore.dbclient.SubscriptionListener
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import java.util.concurrent.ExecutionException
 import me.dmadouros.eda.shared.events.Event
+import java.util.concurrent.ExecutionException
 
 private data class PositionEvent(override val id: String, val position: Long) : Event {
     override val type: String = "Read"
@@ -45,7 +45,7 @@ class MessageStore(val client: EventStoreDBClient, val objectMapper: ObjectMappe
         fromStart: Boolean = false,
         eventHandler: (ResolvedEvent) -> Unit
     ) {
-        val subscriberStreamName = "subscriberPosition-${subscriberId}"
+        val subscriberStreamName = "subscriberPosition-$subscriberId"
 
         val listener: SubscriptionListener = object : SubscriptionListener() {
             override fun onEvent(subscription: Subscription, event: ResolvedEvent) {

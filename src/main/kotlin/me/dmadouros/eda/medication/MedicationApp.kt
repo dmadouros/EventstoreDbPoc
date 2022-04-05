@@ -15,7 +15,7 @@ fun Application.configureMedication(
     messageStore: MessageStore,
 ) {
     routing {
-        post("/medications") {
+        post("/medication/medications") {
             val medication = call.receive<MedicationDto>()
             AddMedication(messageStore).call(medication)
             call.respond(HttpStatusCode.Created)

@@ -1,4 +1,4 @@
-package me.dmadouros.eda.pharmacy.events
+package me.dmadouros.eda.medication.events
 
 import me.dmadouros.eda.medication.dtos.MedicationDto
 import me.dmadouros.eda.shared.events.Event
@@ -15,6 +15,6 @@ data class MedicationFound(
     override val type: String = "MedicationFound"
 }
 
-//data class MedicationNotFound(override val id: String) : MedicationIdentified(id), Event {
+// data class MedicationNotFound(override val id: String) : MedicationIdentified(id), Event {
 //    override val type: String = "MedicationNotFound"
-//}
+// }

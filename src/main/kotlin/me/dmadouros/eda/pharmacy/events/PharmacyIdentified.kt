@@ -15,6 +15,6 @@ data class PharmacyFound(
     override val type: String = "PharmacyFound"
 }
 
-//data class PharmacyNotFound(override val id: String) : PharmacyIdentified(id), Event {
+// data class PharmacyNotFound(override val id: String) : PharmacyIdentified(id), Event {
 //    override val type: String = "PharmacyNotFound"
-//}
+// }

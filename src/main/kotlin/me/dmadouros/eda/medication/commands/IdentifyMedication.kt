@@ -1,7 +1,7 @@
 package me.dmadouros.eda.medication.commands
 
-import me.dmadouros.eda.pharmacy.events.MedicationFound
-import me.dmadouros.eda.pharmacy.events.MedicationIdentified
+import me.dmadouros.eda.medication.events.MedicationFound
+import me.dmadouros.eda.medication.events.MedicationIdentified
 import me.dmadouros.eda.shared.infrastructure.MedicationRepository
 
 class IdentifyMedication(private val medicationRepository: MedicationRepository) {
